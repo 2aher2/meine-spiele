@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ابحث عن المحتال - لعبة جماعية عبر الإنترنت</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-attachment: fixed;
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 2px solid #fdbb2d;
+            position: relative;
+            width: 100%;
+            animation: fadeIn 1s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .game-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #fdbb2d;
+            flex-wrap: wrap;
+            position: relative;
+        }
+        
+        .game-title {
+            font-size: 2.8rem;
+            color: #fdbb2d;
+            text-shadow: 0 0 15px rgba(253, 187, 45, 0.8);
+            margin: 10px 0;
+            width: 100%;
+            position: relative;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { text-shadow: 0 0 15px rgba(253, 187, 45, 0.8); }
+            50% { text-shadow: 0 0 25px rgba(253, 187, 45, 1); }
+            100% { text-shadow: 0 0 15px rgba(253, 187, 45, 0.8); }
+        }
+        
+        .game-subtitle {
+            font-size: 1.4rem;
+            color: #ffd166;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        
+        .mode-selector {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .mode-card {
+            background: rgba(26, 42, 108, 0.7);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #2c3e50;
+            position: relative;
+            overflow: hidden;
+            transform: translateY(0);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+        
+        .mode-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            border-color: #fdbb2d;
+            background: rgba(26, 42, 108, 0.9);
+            animation: none;
+        }
+        
+        .mode-card.online:hover {
+            background: rgba(26, 108, 62, 0.9);
+        }
+        
+        .mode-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #fdbb2d;
+            transition: transform 0.3s ease;
+        }
+        
+        .mode-card:hover .mode-icon {
+            transform: scale(1.1);
+        }
+        
+        .mode-title {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: #ffd166;
+        }
+        
+        .mode-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .mode-features {
+            text-align: right;
+            padding-right: 15px;
+            margin-top: 20px;
+        }
+        
+        .mode-features li {
+            margin-bottom: 10px;
+            list-style-type: none;
+            position: relative;
+            padding-right: 25px;
+        }
+        
+        .mode-features li:before {
+            content: "•";
+            color: #fdbb2d;
+            position: absolute;
+            right: 0;
+            font-size: 1.5rem;
+        }
+        
+        .btn {
+            background: linear-gradient(to right, #fdbb2d, #b21f1f);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.3rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px 10px;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            width: 80%;
+            max-width: 300px;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-online {
+            background: linear-gradient(to right, #4CAF50, #2E7D32);
+        }
+        
+        .btn-ready {
+            background: linear-gradient(to right, #00c853, #009624);
+            font-size: 1.5rem;
+            padding: 20px 50px;
+            width: 90%;
+            max-width: 400px;
+        }
+        
+        .btn i {
+            margin-left: 10px;
+        }
+        
+        .screen {
+            display: none;
+            min-height: 400px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .active-screen {
+            display: block;
+        }
+        
+        .invite-section {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border: 2px solid #4CAF50;
+            text-align: center;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .invite-title {
+            font-size: 2rem;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        
+        .room-code {
+            font-size: 3rem;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 15px;
+            margin: 20px auto;
+            color: #ffd166;
+            letter-spacing: 5px;
+            border: 2px solid #fdbb2d;
+            max-width: 500px;
+            animation: pulse 2s infinite;
+        }
+        
+        .join-section {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border: 2px solid #2196F3;
+            text-align: center;
+            animation: slideIn 0.5s ease;
+        }
+        
+        .join-title {
+            font-size: 2rem;
+            color: #2196F3;
+            margin-bottom: 20px;
+        }
+        
+        .input-group {
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        input {
+            padding: 12px 20px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            border: none;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            margin: 10px auto;
+            display: block;
+            transition: all 0.3s ease;
+        }
+        
+        input:disabled {
+            background: rgba(200, 200, 200, 0.5);
+            color: #ddd;
+        }
+        
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 10px rgba(253, 187, 45, 0.7);
+        }
+        
+        .share-options {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .share-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #fdbb2d;
+            border-radius: 50px;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .share-btn:hover {
+            background: rgba(253, 187, 45, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .player-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .player {
+            background: rgba(26, 42, 108, 0.7);
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            min-width: 150px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            animation: popIn 0.3s ease;
+        }
+        
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .player i {
+            color: #fdbb2d;
+        }
+        
+        .player.ready {
+            background: rgba(46, 125, 50, 0.7);
+        }
+        
+        .player.admin {
+            background: linear-gradient(to right, #fdbb2d, #b21f1f);
+        }
+        
+        .player.kicked {
+            background: linear-gradient(to right, #ff4b2b, #b21f1f);
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .player .admin-badge {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            background: #fdbb2d;
+            color: #000;
+            font-size: 0.8rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+        
+        .player .remove-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff4b2b;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .player:hover .remove-btn {
+            opacity: 1;
+        }
+        
+        .online-players {
+            font-size: 1.3rem;
+            margin: 20px 0;
+            color: #ffd166;
+        }
+        
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        .back-btn:hover {
+            background: rgba(253, 187, 45, 0.3);
+            transform: scale(1.1);
+        }
+        
+        .tab-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 10px;
+        }
+        
+        .tab {
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #2c3e50;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            background: rgba(253, 187, 45, 0.3);
+            border-color: #fdbb2d;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .admin-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .admin-btn {
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: none;
+            background: rgba(253, 187, 45, 0.3);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .admin-btn:hover {
+            background: rgba(253, 187, 45, 0.5);
+        }
+        
+        .kick-confirm {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .kick-dialog {
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #ff4b2b;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: popIn 0.3s ease;
+        }
+        
+        .kick-message {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #ffd166;
+        }
+        
+        .kick-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .kick-btn {
+            padding: 10px 30px;
+            border-radius: 50px;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .kick-confirm-btn {
+            background: #ff4b2b;
+            color: white;
+        }
+        
+        .kick-cancel-btn {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .card-container {
+            perspective: 1000px;
+            width: 300px;
+            height: 200px;
+            margin: 30px auto;
+        }
+        
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s;
+            cursor: pointer;
+        }
+        
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-front {
+            background: linear-gradient(145deg, #1a2a6c, #0d1b4a);
+            border: 3px solid #2c3e50;
+        }
+        
+        .card-back {
+            background: linear-gradient(145deg, #0d1b4a, #1a2a6c);
+            border: 3px solid #fdbb2d;
+            transform: rotateY(180deg);
+        }
+        
+        .card-content {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+        }
+        
+        .card-subtitle {
+            font-size: 1.4rem;
+            margin-top: 15px;
+            color: #ff9e7d;
+            text-align: center;
+            max-width: 90%;
+        }
+        
+        .player-ready-container {
+            margin: 30px 0;
+        }
+        
+        .timer {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #fdbb2d;
+            text-shadow: 0 0 10px rgba(253, 187, 45, 0.7);
+        }
+        
+        .player-ready-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .player-ready-item {
+            background: rgba(26, 42, 108, 0.7);
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            min-width: 120px;
+            transition: all 0.3s ease;
+            animation: popIn 0.3s ease;
+        }
+        
+        .player-ready-item.ready {
+            background: rgba(46, 125, 50, 0.7);
+        }
+        
+        .game-footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 1.1rem;
+            color: #ffd166;
+        }
+        
+        .join-success {
+            background: rgba(46, 125, 50, 0.3);
+            border: 2px solid #4CAF50;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 25px 0;
+            animation: slideIn 0.5s ease;
+        }
+        
+        .join-success h3 {
+            font-size: 1.8rem;
+            color: #4CAF50;
+            margin-bottom: 15px;
+        }
+        
+        .join-success p {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .waiting-spinner {
+            margin: 20px 0;
+            font-size: 2.5rem;
+            color: #fdbb2d;
+            animation: spin 1.5s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .kicked-screen {
+            background: rgba(178, 31, 31, 0.3);
+            border: 2px solid #ff4b2b;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 30px auto;
+            max-width: 600px;
+        }
+        
+        .rejoin-form {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px auto;
+            border: 2px solid #2196F3;
+            text-align: center;
+            max-width: 500px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .game-title {
+                font-size: 2.2rem;
+            }
+            
+            .game-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .mode-card {
+                padding: 20px;
+            }
+            
+            .mode-title {
+                font-size: 1.8rem;
+            }
+            
+            .room-code {
+                font-size: 2.2rem;
+            }
+            
+            .btn {
+                font-size: 1.1rem;
+                padding: 12px 30px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .game-title {
+                font-size: 1.8rem;
+            }
+            
+            .mode-card {
+                padding: 15px;
+            }
+            
+            .mode-icon {
+                font-size: 3rem;
+            }
+            
+            .mode-title {
+                font-size: 1.5rem;
+            }
+            
+            .room-code {
+                font-size: 1.8rem;
+                padding: 10px;
+            }
+            
+            .tab {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+            
+            .card-container {
+                width: 250px;
+                height: 170px;
+            }
+            
+            .card-content {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Start Screen -->
+        <div id="start-screen" class="screen active-screen">
+            <div class="game-header">
+                <h1 class="game-title">ابحث عن المحتال</h1>
+                <div class="game-subtitle">لعبة جماعية ممتعة عبر الإنترنت</div>
+            </div>
+            
+            <div class="mode-selector">
+                <div class="mode-card online" onclick="selectMode('online')">
+                    <div class="mode-icon">
+                        <i class="fas fa-globe-americas"></i>
+                    </div>
+                    <h2 class="mode-title">اللعب عبر الإنترنت</h2>
+                    <p class="mode-description">ادعُ أصدقائك للانضمام إلى غرفة اللعب والاستمتاع معًا</p>
+                    <ul class="mode-features">
+                        <li>ادعُ ما يصل إلى 10 لاعبين</li>
+                        <li>شارك رمز الغرفة أو رابط الدعوة</li>
+                        <li>شاهد من انضم في الوقت الحقيقي</li>
+                        <li>ابدأ اللعبة عندما يكون الجميع جاهزين</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="game-footer">
+                <p>استمتع بتجربة "ابحث عن المحتال" مع أصدقائك عبر الإنترنت!</p>
+            </div>
+        </div>
+        
+        <!-- Online Screen -->
+        <div id="online-screen" class="screen">
+            <button class="back-btn" onclick="showScreen('start-screen')">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            
+            <div class="game-header">
+                <h1 class="game-title">اللعب عبر الإنترنت</h1>
+                <div class="game-subtitle">اختر طريقة الانضمام إلى اللعبة</div>
+            </div>
+            
+            <div class="tab-container">
+                <div class="tab active" id="create-tab" onclick="switchTab('create')">إنشاء غرفة</div>
+                <div class="tab" id="join-tab" onclick="switchTab('join')">الانضمام إلى غرفة</div>
+            </div>
+            
+            <!-- Create Room Tab -->
+            <div class="tab-content active" id="create-content">
+                <div class="invite-section">
+                    <h2 class="invite-title">أنت تقوم بإنشاء غرفة جديدة</h2>
+                    <p>شارك رمز الغرفة مع أصدقائك:</p>
+                    <div class="room-code" id="room-code">38475</div>
+                    
+                    <div class="input-group">
+                        <label for="host-name">اسم المضيف:</label>
+                        <input type="text" id="host-name" placeholder="أدخل اسمك" value="المضيف">
+                    </div>
+                    
+                    <p class="online-players">اللاعبون في الغرفة: <span id="player-count">1</span>/10</p>
+                    
+                    <div class="player-list" id="player-list">
+                        <div class="player admin">
+                            <div class="admin-badge">المشرف</div>
+                            <i class="fas fa-crown"></i>
+                            <span>المضيف</span>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-controls">
+                        <button class="admin-btn" onclick="copyRoomCode()">
+                            <i class="fas fa-copy"></i> نسخ الرمز
+                        </button>
+                        <button class="admin-btn" onclick="shareLink()">
+                            <i class="fas fa-share-alt"></i> مشاركة
+                        </button>
+                    </div>
+                </div>
+                
+                <button class="btn btn-online" onclick="startOnlineGame()">
+                    <i class="fas fa-play"></i> بدء اللعبة
+                </button>
+            </div>
+            
+            <!-- Join Room Tab -->
+            <div class="tab-content" id="join-content">
+                <div class="join-section">
+                    <h2 class="join-title">الانضمام إلى غرفة موجودة</h2>
+                    
+                    <div class="input-group">
+                        <label for="room-code-input">أدخل رمز الغرفة:</label>
+                        <input type="text" id="room-code-input" placeholder="أدخل الرمز المكون من 5 أرقام">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="player-name">اسم اللاعب:</label>
+                        <input type="text" id="player-name" placeholder="أدخل اسمك">
+                    </div>
+                    
+                    <button class="btn btn-online" id="join-btn" onclick="joinRoom()" style="margin: 20px auto; display: block;">
+                        <i class="fas fa-sign-in-alt"></i> الانضمام إلى الغرفة
+                    </button>
+                    
+                    <div id="join-status" style="margin: 20px 0; min-height: 30px;"></div>
+                    
+                    <!-- Section shown after successful join -->
+                    <div id="join-success" class="join-success" style="display: none;">
+                        <h3><i class="fas fa-check-circle"></i> تم الانضمام بنجاح!</h3>
+                        <p>اسمك: <span id="joined-player-name">---</span></p>
+                        <p>رمز الغرفة: <span id="joined-room-code">---</span></p>
+                        <p>يرجى الانتظار حتى يبدأ المضيف اللعبة</p>
+                        <div class="waiting-spinner">
+                            <i class="fas fa-spinner"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Preparation Screen (Online only) -->
+        <div id="preparation-screen" class="screen">
+            <div class="game-header">
+                <h1 class="game-title">تحضير اللعبة</h1>
+                <div class="game-subtitle">انظر إلى كلمتك السرية</div>
+            </div>
+            
+            <div class="card-container">
+                <div class="card" id="word-card">
+                    <div class="card-face card-front">
+                        <div class="card-content">انقر لرؤية الكلمة</div>
+                        <div class="card-subtitle">(اضغط على البطاقة)</div>
+                    </div>
+                    <div class="card-face card-back">
+                        <div class="card-content" id="card-content">---</div>
+                        <div class="card-subtitle" id="card-subtitle"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="timer" id="preparation-timer">30 ثانية</div>
+            
+            <div class="player-ready-container">
+                <button id="ready-btn" class="btn btn-ready">
+                    <i class="fas fa-check-circle"></i> أنا مستعد
+                </button>
+                
+                <div class="player-ready-list" id="player-ready-list">
+                    <!-- Ready players will be listed here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Game Screen (Online) -->
+        <div id="game-screen" class="screen">
+            <button class="back-btn" onclick="showScreen('start-screen')">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            
+            <div class="game-header">
+                <h1 class="game-title" id="game-title">ابحث عن المحتال</h1>
+                <div class="game-subtitle" id="game-subtitle">اللاعب الحالي: <span id="current-player">محمد</span></div>
+            </div>
+            
+            <div class="card-container">
+                <div class="card" id="game-word-card">
+                    <div class="card-face card-front">
+                        <div class="card-content">انقر لرؤية الكلمة</div>
+                        <div class="card-subtitle">(اضغط على البطاقة)</div>
+                    </div>
+                    <div class="card-face card-back">
+                        <div class="card-content" id="game-card-content">---</div>
+                        <div class="card-subtitle" id="game-card-subtitle"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="next-player-btn" class="btn" disabled>التالي</button>
+        </div>
+        
+        <!-- Kick Confirmation Dialog -->
+        <div id="kick-confirm" class="kick-confirm" style="display: none;">
+            <div class="kick-dialog">
+                <div class="kick-message" id="kick-message">هل تريد طرد محمد من الغرفة؟</div>
+                <div class="kick-buttons">
+                    <button class="kick-btn kick-confirm-btn" onclick="confirmKick()">نعم، طرده</button>
+                    <button class="kick-btn kick-cancel-btn" onclick="cancelKick()">إلغاء</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Kicked Screen -->
+        <div id="kicked-screen" class="screen">
+            <div class="game-header">
+                <h1 class="game-title">تم طردك من اللعبة</h1>
+                <div class="game-subtitle">يمكنك الانضمام مرة أخرى برمز واسم جديدين</div>
+            </div>
+            
+            <div class="kicked-screen">
+                <i class="fas fa-ban" style="font-size: 5rem; color: #ff4b2b; margin: 30px 0;"></i>
+                <p style="font-size: 1.5rem; margin: 20px 0;">لقد تم طردك من الغرفة بواسطة المضيف</p>
+                <p>يمكنك الانضمام مرة أخرى باستخدام رمز غرفة جديد واسم جديد</p>
+                
+                <div class="rejoin-form">
+                    <div class="input-group">
+                        <label for="new-room-code">رمز الغرفة الجديد:</label>
+                        <input type="text" id="new-room-code" placeholder="أدخل الرمز الجديد">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="new-player-name">اسم اللاعب الجديد:</label>
+                        <input type="text" id="new-player-name" placeholder="أدخل اسمًا جديدًا">
+                    </div>
+                    
+                    <button class="btn" onclick="rejoinGame()">
+                        <i class="fas fa-redo"></i> إعادة الانضمام
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Screens
+        const startScreen = document.getElementById('start-screen');
+        const onlineScreen = document.getElementById('online-screen');
+        const preparationScreen = document.getElementById('preparation-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const kickedScreen = document.getElementById('kicked-screen');
+        const kickConfirm = document.getElementById('kick-confirm');
+        
+        // Online screen elements
+        const roomCodeElement = document.getElementById('room-code');
+        const playerCountElement = document.getElementById('player-count');
+        const playerListElement = document.getElementById('player-list');
+        const joinStatusElement = document.getElementById('join-status');
+        const kickMessage = document.getElementById('kick-message');
+        const joinBtn = document.getElementById('join-btn');
+        const joinSuccess = document.getElementById('join-success');
+        const joinedPlayerName = document.getElementById('joined-player-name');
+        const joinedRoomCode = document.getElementById('joined-room-code');
+        
+        // Preparation screen elements
+        const wordCard = document.getElementById('word-card');
+        const cardContentElement = document.getElementById('card-content');
+        const cardSubtitleElement = document.getElementById('card-subtitle');
+        const preparationTimer = document.getElementById('preparation-timer');
+        const readyBtn = document.getElementById('ready-btn');
+        const playerReadyList = document.getElementById('player-ready-list');
+        
+        // Game screen elements
+        const gameTitleElement = document.getElementById('game-title');
+        const gameSubtitleElement = document.getElementById('game-subtitle');
+        const currentPlayerElement = document.getElementById('current-player');
+        const nextPlayerBtn = document.getElementById('next-player-btn');
+        
+        // Tabs
+        const createTab = document.getElementById('create-tab');
+        const joinTab = document.getElementById('join-tab');
+        const createContent = document.getElementById('create-content');
+        const joinContent = document.getElementById('join-content');
+        
+        // Inputs
+        const roomCodeInput = document.getElementById('room-code-input');
+        const playerNameInput = document.getElementById('player-name');
+        const newRoomCodeInput = document.getElementById('new-room-code');
+        const newPlayerNameInput = document.getElementById('new-player-name');
+        
+        // Game state
+        let players = [];
+        let kickedPlayers = [];
+        let isHost = false;
+        let roomCode = "";
+        let adminPlayerId = "";
+        let playerToKick = null;
+        let preparationTimerInterval;
+        let playerId = "";
+        let hasJoinedRoom = false;
+        let currentPlayerIndex = 0;
+
+        // Function to show a specific screen
+        function showScreen(screenId) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active-screen');
+            });
+            
+            // Show the requested screen
+            document.getElementById(screenId).classList.add('active-screen');
+        }
+        
+        // Function to switch tabs
+        function switchTab(tabName) {
+            if (tabName === 'create') {
+                createTab.classList.add('active');
+                joinTab.classList.remove('active');
+                createContent.classList.add('active');
+                joinContent.classList.remove('active');
+            } else {
+                joinTab.classList.add('active');
+                createTab.classList.remove('active');
+                joinContent.classList.add('active');
+                createContent.classList.remove('active');
+            }
+        }
+        
+        // Function to select game mode
+        function selectMode(mode) {
+            if (mode === 'online') {
+                showScreen('online-screen');
+                generateRoomCode();
+                setupHostPlayer();
+            }
+        }
+        
+        // Generate a random room code
+        function generateRoomCode() {
+            roomCode = Math.floor(10000 + Math.random() * 90000).toString();
+            roomCodeElement.textContent = roomCode;
+        }
+        
+        // Setup host player
+        function setupHostPlayer() {
+            const hostName = document.getElementById('host-name').value || "المضيف";
+            playerId = generatePlayerId();
+            
+            players = [{
+                id: playerId,
+                name: hostName,
+                isAdmin: true,
+                isHost: true,
+                isReady: false
+            }];
+            
+            adminPlayerId = playerId;
+            updatePlayerList();
+        }
+        
+        // Generate unique player ID
+        function generatePlayerId() {
+            return 'player-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+        }
+        
+        // Update player list in create tab
+        function updatePlayerList() {
+            playerListElement.innerHTML = '';
+            playerCountElement.textContent = players.length;
+            
+            players.forEach(player => {
+                const playerElement = document.createElement('div');
+                playerElement.className = 'player';
+                playerElement.id = player.id;
+                
+                if (player.isAdmin) {
+                    playerElement.classList.add('admin');
+                    playerElement.innerHTML = `
+                        <div class="admin-badge">المشرف</div>
+                        <i class="fas fa-crown"></i>
+                        <span>${player.name}</span>
+                    `;
+                } else {
+                    playerElement.innerHTML = `
+                        <i class="fas fa-user"></i>
+                        <span>${player.name}</span>
+                        <div class="remove-btn" onclick="showKickConfirmation('${player.id}', '${player.name}')">
+                            <i class="fas fa-times"></i>
+                        </div>
+                    `;
+                }
+                
+                playerListElement.appendChild(playerElement);
+            });
+        }
+        
+        // Show kick confirmation dialog
+        function showKickConfirmation(playerId, playerName) {
+            playerToKick = playerId;
+            kickMessage.textContent = `هل تريد طرد ${playerName} من الغرفة؟`;
+            kickConfirm.style.display = 'flex';
+        }
+        
+        // Confirm kick action
+        function confirmKick() {
+            if (playerToKick) {
+                const playerIndex = players.findIndex(p => p.id === playerToKick);
+                if (playerIndex !== -1) {
+                    const player = players[playerIndex];
+                    kickedPlayers.push(player.name);
+                    
+                    // Add kicked effect
+                    const playerElement = document.getElementById(playerToKick);
+                    if (playerElement) {
+                        playerElement.classList.add('kicked');
+                        
+                        // Remove player after animation
+                        setTimeout(() => {
+                            players.splice(playerIndex, 1);
+                            updatePlayerList();
+                            
+                            // If player was kicked, show kicked screen
+                            if (player.id === playerId) {
+                                showScreen('kicked-screen');
+                            }
+                        }, 500);
+                    }
+                }
+                playerToKick = null;
+            }
+            kickConfirm.style.display = 'none';
+        }
+        
+        // Cancel kick action
+        function cancelKick() {
+            playerToKick = null;
+            kickConfirm.style.display = 'none';
+        }
+        
+        // Join room as a player
+        function joinRoom() {
+            const enteredCode = roomCodeInput.value;
+            const playerName = playerNameInput.value;
+            
+            if (!enteredCode || enteredCode.length !== 5) {
+                joinStatusElement.innerHTML = '<div style="color: #ff4b2b;">الرجاء إدخال رمز غرفة صالح (5 أرقام)</div>';
+                return;
+            }
+            
+            if (!playerName) {
+                joinStatusElement.innerHTML = '<div style="color: #ff4b2b;">الرجاء إدخال اسم اللاعب</div>';
+                return;
+            }
+            
+            // Check if player name is kicked
+            if (kickedPlayers.includes(playerName)) {
+                showScreen('kicked-screen');
+                return;
+            }
+            
+            if (enteredCode !== roomCode) {
+                joinStatusElement.innerHTML = '<div style="color: #ff4b2b;">رمز الغرفة غير صحيح. يرجى المحاولة مرة أخرى.</div>';
+                return;
+            }
+            
+            playerId = generatePlayerId();
+            players.push({
+                id: playerId,
+                name: playerName,
+                isAdmin: false,
+                isHost: false,
+                isReady: false
+            });
+            
+            // Disable inputs and show success message
+            hasJoinedRoom = true;
+            roomCodeInput.disabled = true;
+            playerNameInput.disabled = true;
+            joinBtn.disabled = true;
+            joinBtn.style.opacity = '0.5';
+            joinBtn.style.cursor = 'not-allowed';
+            
+            // Show success section
+            joinStatusElement.innerHTML = '';
+            joinSuccess.style.display = 'block';
+            joinedPlayerName.textContent = playerName;
+            joinedRoomCode.textContent = enteredCode;
+            
+            updatePlayerList();
+        }
+        
+        // Rejoin game with new code and name
+        function rejoinGame() {
+            const newRoomCode = newRoomCodeInput.value;
+            const newPlayerName = newPlayerNameInput.value;
+            
+            if (!newRoomCode || !newPlayerName) {
+                alert('الرجاء إدخال رمز الغرفة واسم اللاعب الجديدين');
+                return;
+            }
+            
+            // Reset kicked status
+            kickedPlayers = [];
+            
+            // Go back to start screen
+            showScreen('start-screen');
+            
+            // Reset inputs
+            newRoomCodeInput.value = '';
+            newPlayerNameInput.value = '';
+        }
+        
+        // Copy room code to clipboard
+        function copyRoomCode() {
+            navigator.clipboard.writeText(roomCode)
+                .then(() => {
+                    alert(`تم نسخ رمز الغرفة: ${roomCode}`);
+                })
+                .catch(err => {
+                    console.error('Error copying room code: ', err);
+                });
+        }
+        
+        // Share link
+        function shareLink() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'انضم إلى لعبة "ابحث عن المحتال"',
+                    text: `انضم إلى غرفتي في لعبة "ابحث عن المحتال"! رمز الغرفة: ${roomCode}`,
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                alert('المشاركة غير مدعومة في هذا المتصفح. يرجى نسخ الرابط يدويًا.');
+            }
+        }
+        
+        // Start online game
+        function startOnlineGame() {
+            if (players.length < 3) {
+                alert('يجب أن يكون هناك على الأقل 3 لاعبين لبدء اللعبة');
+                return;
+            }
+            
+            isHost = true;
+            
+            // Reset ready status for all players
+            players.forEach(player => {
+                player.isReady = false;
+            });
+            
+            // Assign roles
+            assignRoles();
+            
+            // Show preparation screen
+            showScreen('preparation-screen');
+            setupPreparationScreen();
+        }
+        
+        // Assign roles (imposter and words)
+        function assignRoles() {
+            // Choose imposter randomly
+            const imposterIndex = Math.floor(Math.random() * players.length);
+            
+            // Choose secret word
+            const words = [
+                {word: "تفاح", imposterHint: "أحمر"},
+                {word: "موز", imposterHint: "أصفر"},
+                {word: "أسد", imposterHint: "غابة"},
+                {word: "نمر", imposterHint: "خطوط"},
+                {word: "مصر", imposterHint: "نهر"},
+                {word: "طائرة", imposterHint: "سفر"},
+                {word: "كتاب", imposterHint: "قراءة"},
+                {word: "هاتف", imposterHint: "اتصال"},
+                {word: "مدرسة", imposterHint: "تعليم"},
+                {word: "شمس", imposterHint: "ضوء"},
+                {word: "بحر", imposterHint: "مياه"},
+                {word: "جبل", imposterHint: "مرتفع"},
+                {word: "سيارة", imposterHint: "تنقل"},
+                {word: "كمبيوتر", imposterHint: "تكنولوجيا"},
+                {word: "قهوة", imposterHint: "مشروب"}
+            ];
+            
+            const randomWord = words[Math.floor(Math.random() * words.length)];
+            
+            // Assign to players
+            players.forEach((player, index) => {
+                if (index === imposterIndex) {
+                    player.role = "imposter";
+                    player.word = "أنت المحتال!";
+                    player.hint = "تظاهر بأنك تعرف الكلمة!";
+                } else {
+                    player.role = "player";
+                    player.word = randomWord.word;
+                    player.hint = "";
+                }
+            });
+        }
+        
+        // Setup preparation screen
+        function setupPreparationScreen() {
+            // Reset ready button
+            readyBtn.disabled = true;
+            readyBtn.innerHTML = '<i class="fas fa-check-circle"></i> أنا مستعد';
+            playerReadyList.innerHTML = '';
+            
+            // Find current player
+            const currentPlayer = players.find(p => p.id === playerId);
+            
+            if (currentPlayer) {
+                // Set card content
+                cardContentElement.textContent = currentPlayer.word;
+                cardContentElement.style.color = currentPlayer.role === "imposter" ? "#ff4b2b" : "#00ff9d";
+                cardSubtitleElement.textContent = currentPlayer.hint;
+                cardSubtitleElement.style.color = "#ff9e7d";
+                
+                // Start timer
+                startPreparationTimer();
+            }
+            
+            // Setup card flip
+            wordCard.addEventListener('click', function() {
+                if (!wordCard.classList.contains('flipped')) {
+                    wordCard.classList.add('flipped');
+                    readyBtn.disabled = false;
+                }
+            });
+            
+            // Ready button event
+            readyBtn.addEventListener('click', markReady);
+        }
+        
+        // Start preparation timer
+        function startPreparationTimer() {
+            let timeLeft = 30;
+            preparationTimer.textContent = `${timeLeft} ثانية`;
+            preparationTimer.style.color = "#fdbb2d";
+            
+            clearInterval(preparationTimerInterval);
+            preparationTimerInterval = setInterval(() => {
+                timeLeft--;
+                preparationTimer.textContent = `${timeLeft} ثانية`;
+                
+                // Color change based on time
+                if (timeLeft <= 10) {
+                    preparationTimer.style.color = "#ff4b2b";
+                } else if (timeLeft <= 20) {
+                    preparationTimer.style.color = "#fdbb2d";
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(preparationTimerInterval);
+                    markReady();
+                }
+            }, 1000);
+        }
+        
+        // Mark player as ready
+        function markReady() {
+            const currentPlayer = players.find(p => p.id === playerId);
+            if (currentPlayer) {
+                currentPlayer.isReady = true;
+                
+                // Update UI
+                readyBtn.disabled = true;
+                readyBtn.innerHTML = '<i class="fas fa-check-circle"></i> جاهز!';
+                
+                // Add to ready list
+                const readyItem = document.createElement('div');
+                readyItem.className = 'player-ready-item ready';
+                readyItem.textContent = currentPlayer.name;
+                playerReadyList.appendChild(readyItem);
+                
+                // Check if all players are ready
+                checkAllReady();
+            }
+        }
+        
+        // Check if all players are ready
+        function checkAllReady() {
+            const allReady = players.every(player => player.isReady);
+            if (allReady) {
+                clearInterval(preparationTimerInterval);
+                setTimeout(() => {
+                    startGame();
+                }, 1500);
+            }
+        }
+        
+        // Start the game
+        function startGame() {
+            showScreen('game-screen');
+            gameTitleElement.textContent = "ابحث عن المحتال";
+            gameSubtitleElement.textContent = "ابدأ بالتحقيق!";
+            
+            // Start with first player
+            currentPlayerIndex = 0;
+            showPlayerWord(currentPlayerIndex);
+        }
+        
+        // Show word for specific player
+        function showPlayerWord(playerIndex) {
+            if (playerIndex < players.length) {
+                const player = players[playerIndex];
+                currentPlayerElement.textContent = player.name;
+                
+                // Reset card
+                const gameWordCard = document.getElementById('game-word-card');
+                gameWordCard.classList.remove('flipped');
+                
+                // Set card content
+                const gameCardContent = document.getElementById('game-card-content');
+                const gameCardSubtitle = document.getElementById('game-card-subtitle');
+                
+                gameCardContent.textContent = "---";
+                gameCardSubtitle.textContent = "";
+                
+                // Enable card flip
+                gameWordCard.addEventListener('click', function flipHandler() {
+                    if (!gameWordCard.classList.contains('flipped')) {
+                        gameWordCard.classList.add('flipped');
+                        
+                        // Set content after animation
+                        setTimeout(() => {
+                            gameCardContent.textContent = player.word;
+                            gameCardContent.style.color = player.role === "imposter" ? "#ff4b2b" : "#00ff9d";
+                            gameCardSubtitle.textContent = player.hint;
+                            gameCardSubtitle.style.color = "#ff9e7d";
+                            
+                            // Enable next button
+                            nextPlayerBtn.disabled = false;
+                            
+                            // Remove event listener after use
+                            gameWordCard.removeEventListener('click', flipHandler);
+                        }, 500);
+                    }
+                });
+                
+                // Next player button
+                nextPlayerBtn.disabled = true;
+                nextPlayerBtn.textContent = "التالي";
+                nextPlayerBtn.onclick = function() {
+                    showPlayerWord(playerIndex + 1);
+                };
+            } else {
+                // All players have seen their words
+                gameSubtitleElement.textContent = "ابدأ المناقشة!";
+                nextPlayerBtn.textContent = "بدء المناقشة";
+                nextPlayerBtn.onclick = function() {
+                    alert("ابدأ المناقشة مع اللاعبين للتعرف على المحتال!");
+                };
+            }
+        }
+        
+        // Initialize the page
+        window.onload = function() {
+            // Generate initial room code
+            generateRoomCode();
+        };
+    </script>
+</body>
+</html>

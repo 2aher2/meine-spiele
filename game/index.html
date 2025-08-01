@@ -106,6 +106,14 @@
             padding: 10px;
         }
         
+        .card-subtitle {
+            font-size: 1.4rem;
+            margin-top: 15px;
+            color: #ff9e7d;
+            text-align: center;
+            max-width: 90%;
+        }
+        
         .btn {
             background: linear-gradient(to right, #fdbb2d, #b21f1f);
             color: white;
@@ -191,13 +199,6 @@
             margin: 10px auto;
         }
         
-        .timer {
-            font-size: 3.5rem;
-            font-weight: bold;
-            margin: 25px 0;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
-        }
-        
         .word-display {
             font-size: 1.8rem;
             background: rgba(0, 0, 0, 0.5);
@@ -233,14 +234,11 @@
             margin-bottom: 8px;
         }
         
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        .pulse {
-            animation: pulse 2s infinite;
+        .player-name-inputs {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            margin: 20px 0;
         }
         
         .hint-item {
@@ -256,13 +254,6 @@
             padding: 20px;
             border-radius: 15px;
             margin: 25px 0;
-        }
-        
-        .player-name-inputs {
-            max-height: 400px;
-            overflow-y: auto;
-            padding: 10px;
-            margin: 20px 0;
         }
         
         @media (max-width: 768px) {
@@ -321,10 +312,6 @@
                 padding: 10px 15px;
                 min-width: 90px;
             }
-            
-            .timer {
-                font-size: 2.8rem;
-            }
         }
     </style>
 </head>
@@ -335,13 +322,8 @@
         <!-- Setup Screen -->
         <div id="setup-screen" class="screen active-screen">
             <div class="input-group">
-                <h2>عدد اللاعبين</h2>
+                <h2>عدد اللاعبين (من ٣ إلى ١٠)</h2>
                 <input type="number" id="player-count" min="3" max="10" value="4">
-            </div>
-            
-            <div class="input-group">
-                <h2>مدة الجولة (ثواني)</h2>
-                <input type="number" id="round-time" min="30" max="180" value="60">
             </div>
             
             <button id="name-setup-btn" class="btn">التالي</button>
@@ -350,9 +332,9 @@
                 <h3>كيفية اللعب:</h3>
                 <ul>
                     <li>سيتم اختيار لاعب واحد عشوائيًا ليكون "المحتال"</li>
-                    <li>سيشاهد كل لاعب كلمة سرية ما عدا المحتال</li>
-                    <li>يجب على اللاعبين وصف الكلمة بكلمات مشابهة دون ذكرها مباشرة</li>
-                    <li>يحاول المحتال التمويه دون أن يُكتشف</li>
+                    <li>سيشاهد كل اللاعبين الكلمة السرية عدا المحتال</li>
+                    <li>يحصل المحتال على كلمة مشابهة لمساعدته على التمويه</li>
+                    <li>يصف اللاعبون الكلمة بكلمات مشابهة دون ذكرها مباشرة</li>
                     <li>بعد انتهاء الجولة، يصوت اللاعبون على من يعتقدون أنه المحتال</li>
                     <li>يحصل اللاعبون على نقاط إذا اكتشفوا المحتال، ويحصل المحتال على نقاط إذا لم يُكتشف</li>
                 </ul>
@@ -376,10 +358,11 @@
                 <div class="card" id="word-card">
                     <div class="card-face card-front">
                         <div class="card-content">انقر لرؤية الكلمة</div>
-                        <div style="font-size: 1.2rem; margin-top: 10px;">(اضغط على البطاقة)</div>
+                        <div class="card-subtitle">(اضغط على البطاقة)</div>
                     </div>
                     <div class="card-face card-back">
                         <div class="card-content" id="card-content">---</div>
+                        <div class="card-subtitle" id="card-subtitle"></div>
                     </div>
                 </div>
             </div>
@@ -390,8 +373,6 @@
         <!-- Discussion Screen -->
         <div id="discussion-screen" class="screen">
             <h2>صف الكلمة بكلمات مشابهة</h2>
-            
-            <div class="timer" id="timer">60</div>
             
             <div class="input-group">
                 <input type="text" id="hint-input" placeholder="اكتب كلمة مشابهة...">
@@ -432,26 +413,100 @@
     </div>
 
     <script>
-        // Game data with Arabic words
+        // Spieledaten mit subtilen Hinweisen für den Imposter
         const arabicWords = [
-            "تفاح", "موز", "برتقال", "فراولة", "عنب", "أسد", "نمر", "فيل", "زرافة", "دب",
-            "مصر", "السعودية", "العراق", "الأردن", "المغرب", "أحمر", "أزرق", "أخضر", "أصفر", "بنفسجي",
-            "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "ماء", "عصير", "شاي", "قهوة", "حليب",
-            "سيارة", "قطار", "طائرة", "دراجة", "حافلة", "شمس", "قمر", "نجمة", "سماء", "سحاب",
-            "كتاب", "قلم", "دفتر", "مدرسة", "معلم", "بيت", "باب", "نافذة", "سرير", "مطبخ"
+            {
+                word: "تفاح",
+                imposterHint: "أحمر" // rot (nicht direkt "Apfel", aber eine Eigenschaft)
+            },
+            {
+                word: "موز",
+                imposterHint: "أصفر" // gelb (Farbe statt Fruchtname)
+            },
+            {
+                word: "أسد",
+                imposterHint: "غابة" // Wald (Lebensraum statt Tiername)
+            },
+            {
+                word: "نمر",
+                imposterHint: "خطوط" // Streifen (charakteristisches Merkmal)
+            },
+            {
+                word: "مصر",
+                imposterHint: "نهر" // Fluss (bezogen auf den Nil)
+            },
+            {
+                word: "سيارة",
+                imposterHint: "سرعة" // Geschwindigkeit (Eigenschaft statt Objekt)
+            },
+            {
+                word: "شمس",
+                imposterHint: "ضوء" // Licht (statt direkt "Sonne")
+            },
+            {
+                word: "كتاب",
+                imposterHint: "صفحات" // Seiten (Bestandteil statt Objekt)
+            },
+            {
+                word: "بيت",
+                imposterHint: "باب" // Tür (Teil eines Hauses)
+            },
+            {
+                word: "مدرسة",
+                imposterHint: "تعليم" // Bildung (statt direkt "Schule")
+            },
+            {
+                word: "قهوة",
+                imposterHint: "أسود" // schwarz (Farbe des Getränks)
+            },
+            {
+                word: "بحر",
+                imposterHint: "أزرق" // blau (Farbe statt Objekt)
+            },
+            {
+                word: "جبل",
+                imposterHint: "عالٍ" // hoch (Eigenschaft statt Objekt)
+            },
+            {
+                word: "ساعة",
+                imposterHint: "وقت" // Zeit (statt direkt "Uhr")
+            },
+            {
+                word: "هاتف",
+                imposterHint: "اتصال" // Verbindung (Funktion statt Objekt)
+            },
+            {
+                word: "زهرة",
+                imposterHint: "رائحة" // Duft (Eigenschaft statt Objekt)
+            },
+            {
+                word: "ثلج",
+                imposterHint: "بارد" // kalt (Eigenschaft statt Objekt)
+            },
+            {
+                word: "قمر",
+                imposterHint: "ليلي" // nächtlich (statt direkt "Mond")
+            },
+            {
+                word: "طائرة",
+                imposterHint: "سحاب" // Wolken (Umgebung statt Objekt)
+            },
+            {
+                word: "سمكة",
+                imposterHint: "سباحة" // Schwimmen (Tätigkeit statt Objekt)
+            }
         ];
         
-        // Game state
+        // Spielzustand
         let players = [];
         let currentPlayerIndex = 0;
         let imposterIndex = -1;
         let secretWord = "";
-        let roundTime = 60;
-        let timerInterval;
+        let imposterWordHint = "";
         let hints = [];
         let scores = {};
         
-        // DOM elements
+        // DOM-Elemente
         const setupScreen = document.getElementById('setup-screen');
         const nameScreen = document.getElementById('name-screen');
         const playerScreen = document.getElementById('player-screen');
@@ -460,15 +515,14 @@
         const resultsScreen = document.getElementById('results-screen');
         
         const playerCountInput = document.getElementById('player-count');
-        const roundTimeInput = document.getElementById('round-time');
         const nameSetupBtn = document.getElementById('name-setup-btn');
         const playerNameInputs = document.getElementById('player-name-inputs');
         const startBtn = document.getElementById('start-btn');
         const currentPlayerSpan = document.getElementById('current-player');
         const wordCard = document.getElementById('word-card');
         const cardContent = document.getElementById('card-content');
+        const cardSubtitle = document.getElementById('card-subtitle');
         const nextPlayerBtn = document.getElementById('next-player-btn');
-        const timerElement = document.getElementById('timer');
         const hintInput = document.getElementById('hint-input');
         const submitHintBtn = document.getElementById('submit-hint-btn');
         const hintsContainer = document.getElementById('hints-container');
@@ -480,9 +534,16 @@
         const newRoundBtn = document.getElementById('new-round-btn');
         const restartBtn = document.getElementById('restart-btn');
         
-        // Initialize name inputs
+        // Namenseingabe initialisieren
         function setupPlayerNames() {
             const playerCount = parseInt(playerCountInput.value);
+            
+            // Spieleranzahl überprüfen
+            if (playerCount < 3 || playerCount > 10) {
+                alert("عدد اللاعبين يجب أن يكون بين ٣ و ١٠");
+                return;
+            }
+            
             playerNameInputs.innerHTML = '';
             
             for (let i = 0; i < playerCount; i++) {
@@ -496,32 +557,33 @@
             showScreen(nameScreen);
         }
         
-        // Initialize game
+        // Spiel initialisieren
         function initGame() {
-            // Get player names
+            // Spielernamen abrufen
             players = [];
             const nameInputs = playerNameInputs.querySelectorAll('input');
             nameInputs.forEach(input => {
                 players.push(input.value || `اللاعب ${players.length + 1}`);
             });
             
-            // Initialize scores
+            // Punktestand initialisieren
             scores = {};
             players.forEach(player => {
                 scores[player] = 0;
             });
             
-            roundTime = parseInt(roundTimeInput.value);
             startNewRound();
         }
         
-        // Start a new round
+        // Neue Runde starten
         function startNewRound() {
-            // Select a random imposter
+            // Zufälligen Imposter auswählen
             imposterIndex = Math.floor(Math.random() * players.length);
             
-            // Select a random word
-            secretWord = arabicWords[Math.floor(Math.random() * arabicWords.length)];
+            // Zufälliges Wort auswählen
+            const randomWordObj = arabicWords[Math.floor(Math.random() * arabicWords.length)];
+            secretWord = randomWordObj.word;
+            imposterWordHint = randomWordObj.imposterHint;
             
             currentPlayerIndex = 0;
             hints = [];
@@ -530,15 +592,16 @@
             updateCurrentPlayer();
         }
         
-        // Update current player display
+        // Aktuellen Spieler aktualisieren
         function updateCurrentPlayer() {
             currentPlayerSpan.textContent = players[currentPlayerIndex];
             cardContent.textContent = "---";
+            cardSubtitle.textContent = "";
             nextPlayerBtn.disabled = true;
             wordCard.classList.remove('flipped');
         }
         
-        // Show a specific screen
+        // Bestimmten Bildschirm anzeigen
         function showScreen(screen) {
             setupScreen.classList.remove('active-screen');
             nameScreen.classList.remove('active-screen');
@@ -550,25 +613,28 @@
             screen.classList.add('active-screen');
         }
         
-        // Reveal the word on card flip
+        // Karte umdrehen
         function flipCard() {
             wordCard.classList.add('flipped');
             
-            // Show word or imposter message after flip animation
+            // Nach der Animation das Wort anzeigen
             setTimeout(() => {
                 if (currentPlayerIndex === imposterIndex) {
                     cardContent.textContent = "أنت المحتال!";
                     cardContent.style.color = "#ff4b2b";
+                    cardSubtitle.textContent = imposterWordHint; // Nur das Hinweiswort anzeigen
+                    cardSubtitle.style.color = "#ff9e7d";
                 } else {
                     cardContent.textContent = secretWord;
                     cardContent.style.color = "#00ff9d";
+                    cardSubtitle.textContent = ""; // Kein Hinweis für normale Spieler
                 }
                 
                 nextPlayerBtn.disabled = false;
             }, 400);
         }
         
-        // Move to next player or start discussion
+        // Zum nächsten Spieler wechseln oder Diskussion starten
         function nextPlayer() {
             currentPlayerIndex++;
             
@@ -579,32 +645,16 @@
             }
         }
         
-        // Start discussion round
+        // Diskussionsrunde starten
         function startDiscussion() {
             showScreen(discussionScreen);
             hintsContainer.innerHTML = "";
             hintInput.value = "";
             hintInput.disabled = false;
             submitHintBtn.disabled = false;
-            
-            // Start timer
-            let timeLeft = roundTime;
-            timerElement.textContent = timeLeft;
-            
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                timerElement.textContent = timeLeft;
-                
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    timerElement.textContent = "انتهى الوقت!";
-                    hintInput.disabled = true;
-                    submitHintBtn.disabled = true;
-                }
-            }, 1000);
         }
         
-        // Submit hint
+        // Hinweis absenden
         function submitHint() {
             const hint = hintInput.value.trim();
             if (hint === "") return;
@@ -618,16 +668,15 @@
             hintInput.value = "";
         }
         
-        // Update hints display
+        // Hinweise anzeigen
         function updateHintsDisplay() {
             hintsContainer.innerHTML = hints.map(item => 
                 `<div class="hint-item">${item.player}: ${item.hint}</div>`
             ).join("");
         }
         
-        // Start voting
+        // Abstimmung starten
         function startVoting() {
-            clearInterval(timerInterval);
             showScreen(votingScreen);
             votingContainer.innerHTML = "";
             votingResult.innerHTML = "";
@@ -639,15 +688,15 @@
                 playerElement.dataset.index = index;
                 
                 playerElement.addEventListener('click', () => {
-                    // Remove previous selections
+                    // Vorherige Auswahl entfernen
                     document.querySelectorAll('.player').forEach(p => {
                         p.classList.remove('active');
                     });
                     
-                    // Select this player
+                    // Diesen Spieler auswählen
                     playerElement.classList.add('active');
                     
-                    // Show vote button
+                    // Abstimmungsbutton anzeigen
                     votingResult.innerHTML = `<button class="btn btn-vote">تأكيد التصويت لـ ${player}</button>`;
                     
                     document.querySelector('#voting-result .btn').addEventListener('click', () => {
@@ -659,21 +708,21 @@
             });
         }
         
-        // Show results
+        // Ergebnisse anzeigen
         function showResults(votedIndex) {
             const isImposter = votedIndex === imposterIndex;
             const imposterName = players[imposterIndex];
             
-            // Update scores
+            // Punkte aktualisieren
             if (isImposter) {
-                // Players guessed correctly
+                // Spieler haben richtig geraten
                 players.forEach((player, index) => {
                     if (index !== imposterIndex) {
                         scores[player] += 10;
                     }
                 });
             } else {
-                // Imposter wasn't caught
+                // Imposter wurde nicht enttarnt
                 scores[players[imposterIndex]] += 20;
             }
             
@@ -693,7 +742,7 @@
                 resultsContainer.appendChild(playerElement);
             });
             
-            // Result message
+            // Ergebnisnachricht
             resultMessage.innerHTML = isImposter 
                 ? `<div style="color: #00ff9d; font-weight: bold; font-size: 1.8rem;">
                    ✓ أحسنت! لقد اكتشفتم المحتال (${imposterName})
@@ -709,7 +758,7 @@
                    </div>`;
         }
         
-        // Event listeners
+        // Event-Listener
         nameSetupBtn.addEventListener('click', setupPlayerNames);
         startBtn.addEventListener('click', initGame);
         wordCard.addEventListener('click', flipCard);
@@ -728,7 +777,7 @@
             showScreen(setupScreen);
         });
         
-        // Initialize
+        // Initialisierung
         showScreen(setupScreen);
     </script>
 </body>
