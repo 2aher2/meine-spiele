@@ -2,42 +2,52 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Imposter Game</title>
+  <title>My Game Website</title>
   <style>
     body {
       margin: 0;
       padding: 0;
-      background: url('console.jpg') no-repeat center center fixed;
+      background-image: url('console.jpg');
       background-size: cover;
+      background-position: center;
+      height: 100vh;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      font-family: 'Arial', sans-serif;
+      font-family: Arial, sans-serif;
     }
-    .start-button {
-      padding: 20px 40px;
-      font-size: 24px;
-      background-color: rgb(43, 255, 0);
+
+    h1 {
       color: white;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-      transition: 0.3s;
+      font-size: 3em;
+      text-shadow: 2px 2px 5px black;
+      margin-bottom: 50px;
     }
-    .start-button:hover {
-      background-color: rgb(0, 139, 12);
+
+    .button {
+      padding: 15px 40px;
+      margin: 10px;
+      font-size: 1.5em;
+      color: white;
+      background-color: #28a745; /* grün */
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+      transition: background-color 0.3s ease;
+    }
+
+    .button:hover {
+      background-color: #218838;
     }
   </style>
 </head>
 <body>
-  <button class="start-button" onclick="startGame()">PLAY IMPOSTER</button>
+  <h1>🎮 Welcome to My Game Website</h1>
 
-  <script>
-    function startGame() {
-      window.location.href = "game/index.html"; // This will open your game
-    }
-  </script>
+  <!-- Nur noch der grüne "Play Offline"-Button -->
+  <button class="button" onclick="location.href='index.html'">Play Offline</button>
+
 </body>
 </html>
