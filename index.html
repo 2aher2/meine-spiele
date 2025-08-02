@@ -25,12 +25,11 @@
       margin-bottom: 50px;
     }
 
-    .button {
+    .green-button {
       padding: 15px 40px;
-      margin: 10px;
       font-size: 1.5em;
+      background-color: #28a745; /* Grün */
       color: white;
-      background-color: #28a745; /* grün */
       border: none;
       border-radius: 10px;
       cursor: pointer;
@@ -38,7 +37,7 @@
       transition: background-color 0.3s ease;
     }
 
-    .button:hover {
+    .green-button:hover {
       background-color: #218838;
     }
   </style>
@@ -46,8 +45,7 @@
 <body>
   <h1>🎮 Welcome to My Game Website</h1>
 
-  <!-- Nur noch der grüne "Play Offline"-Button -->
-  <button class="button" onclick="location.href='index.html'">Play Offline</button>
-
+  <!-- Button führt zu game/index.html -->
+  <button class="green-button" onclick="location.href='game/'">Play Offline</button>
 </body>
 </html>
